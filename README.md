@@ -50,5 +50,5 @@ const schema = {
 //   schema: { type: String, ... },
 // }]
 
-const errors = validate(schema, config)
+const errors = validator(schema, config)
 ```
