@@ -21,7 +21,7 @@ const schema = {
   age: Number,
   email: {
     type: String,
-		test: value => value.indexOf('@') > -1 ? null : 'Invalid e-mail address'
+    test: value => value.indexOf('@') > -1 ? null : 'Invalid e-mail address'
   },
   gender: {
     type: String,
