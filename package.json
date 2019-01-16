@@ -2,7 +2,10 @@
   "name": "@zeplo/validator",
   "version": "1.0.0",
   "description": "Validates schema in JS",
-  "main": "index.js",
+    "files": [
+    "lib"
+  ],
+  "main": "lib/index.js",
   "scripts": {
     "build": "babel src --ignore .spec.js -d lib",
     "test": "jest ./src --coverage --runInBand",

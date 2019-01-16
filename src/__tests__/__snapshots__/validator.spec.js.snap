@@ -1,0 +1,252 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`schema-validator.spec Error for invalid type by constructor in type prop validates Array type 1`] = `
+Object {
+  "key": "prop1",
+  "message": "Invalid type for \`prop1\` expected type <array> but received value <string> hello",
+  "severity": "error",
+  "value": "hello",
+}
+`;
+
+exports[`schema-validator.spec Error for invalid type by constructor in type prop validates Boolean type 1`] = `
+Object {
+  "key": "prop1",
+  "message": "Invalid type for \`prop1\` expected type <boolean> but received value <string> hello",
+  "severity": "error",
+  "value": "hello",
+}
+`;
+
+exports[`schema-validator.spec Error for invalid type by constructor in type prop validates Date type 1`] = `
+Object {
+  "key": "prop1",
+  "message": "Invalid type for \`prop1\` expected type <date> but received value <string> hello",
+  "severity": "error",
+  "value": "hello",
+}
+`;
+
+exports[`schema-validator.spec Error for invalid type by constructor in type prop validates Function type 1`] = `
+Object {
+  "key": "prop1",
+  "message": "Invalid type for \`prop1\` expected type <function> but received value <string> hello",
+  "severity": "error",
+  "value": "hello",
+}
+`;
+
+exports[`schema-validator.spec Error for invalid type by constructor in type prop validates Number type 1`] = `
+Object {
+  "key": "prop1",
+  "message": "Invalid type for \`prop1\` expected type <number> but received value <string> hello",
+  "severity": "error",
+  "value": "hello",
+}
+`;
+
+exports[`schema-validator.spec Error for invalid type by constructor in type prop validates Object type 1`] = `
+Object {
+  "key": "prop1",
+  "message": "Invalid type for \`prop1\` expected type <object> but received value <string> hello",
+  "severity": "error",
+  "value": "hello",
+}
+`;
+
+exports[`schema-validator.spec Error for invalid type by constructor in type prop validates String type 1`] = `
+Object {
+  "key": "prop1",
+  "message": "Invalid type for \`prop1\` expected type <string> but received value <number> 22",
+  "severity": "error",
+  "value": 22,
+}
+`;
+
+exports[`schema-validator.spec Error for invalid type by constructor validates Array type 1`] = `
+Object {
+  "key": "prop1",
+  "message": "Invalid type for \`prop1\` expected type <array> but received value <string> hello",
+  "severity": "error",
+  "value": "hello",
+}
+`;
+
+exports[`schema-validator.spec Error for invalid type by constructor validates Boolean type 1`] = `
+Object {
+  "key": "prop1",
+  "message": "Invalid type for \`prop1\` expected type <boolean> but received value <string> hello",
+  "severity": "error",
+  "value": "hello",
+}
+`;
+
+exports[`schema-validator.spec Error for invalid type by constructor validates Date type 1`] = `
+Object {
+  "key": "prop1",
+  "message": "Invalid type for \`prop1\` expected type <date> but received value <string> hello",
+  "severity": "error",
+  "value": "hello",
+}
+`;
+
+exports[`schema-validator.spec Error for invalid type by constructor validates Function type 1`] = `
+Object {
+  "key": "prop1",
+  "message": "Invalid type for \`prop1\` expected type <function> but received value <string> hello",
+  "severity": "error",
+  "value": "hello",
+}
+`;
+
+exports[`schema-validator.spec Error for invalid type by constructor validates Number type 1`] = `
+Object {
+  "key": "prop1",
+  "message": "Invalid type for \`prop1\` expected type <number> but received value <string> hello",
+  "severity": "error",
+  "value": "hello",
+}
+`;
+
+exports[`schema-validator.spec Error for invalid type by constructor validates Object type 1`] = `
+Object {
+  "key": "prop1",
+  "message": "Invalid type for \`prop1\` expected type <object> but received value <string> hello",
+  "severity": "error",
+  "value": "hello",
+}
+`;
+
+exports[`schema-validator.spec Error for invalid type by constructor validates String type 1`] = `
+Object {
+  "key": "prop1",
+  "message": "Invalid type for \`prop1\` expected type <string> but received value <number> 22",
+  "severity": "error",
+  "value": 22,
+}
+`;
+
+exports[`schema-validator.spec Error for invalid type by name validates Array type 1`] = `
+Object {
+  "key": "prop1",
+  "message": "Invalid type for \`prop1\` expected type <array> but received value <string> hello",
+  "severity": "error",
+  "value": "hello",
+}
+`;
+
+exports[`schema-validator.spec Error for invalid type by name validates Boolean type 1`] = `
+Object {
+  "key": "prop1",
+  "message": "Invalid type for \`prop1\` expected type <boolean> but received value <string> hello",
+  "severity": "error",
+  "value": "hello",
+}
+`;
+
+exports[`schema-validator.spec Error for invalid type by name validates Date type 1`] = `
+Object {
+  "key": "prop1",
+  "message": "Invalid type for \`prop1\` expected type <date> but received value <string> hello",
+  "severity": "error",
+  "value": "hello",
+}
+`;
+
+exports[`schema-validator.spec Error for invalid type by name validates Function type 1`] = `
+Object {
+  "key": "prop1",
+  "message": "Invalid type for \`prop1\` expected type <function> but received value <string> hello",
+  "severity": "error",
+  "value": "hello",
+}
+`;
+
+exports[`schema-validator.spec Error for invalid type by name validates Number type 1`] = `
+Object {
+  "key": "prop1",
+  "message": "Invalid type for \`prop1\` expected type <number> but received value <string> hello",
+  "severity": "error",
+  "value": "hello",
+}
+`;
+
+exports[`schema-validator.spec Error for invalid type by name validates Object type 1`] = `
+Object {
+  "key": "prop1",
+  "message": "Invalid type for \`prop1\` expected type <object> but received value <string> hello",
+  "severity": "error",
+  "value": "hello",
+}
+`;
+
+exports[`schema-validator.spec Error for invalid type by name validates String type 1`] = `
+Object {
+  "key": "prop1",
+  "message": "Invalid type for \`prop1\` expected type <string> but received value <number> 22",
+  "severity": "error",
+  "value": 22,
+}
+`;
+
+exports[`schema-validator.spec Validates nested props Invalid nested array with schema field named type 1`] = `
+Array [
+  Object {
+    "key": "type.subprop1",
+    "message": "Invalid type for \`type.subprop1\` expected type <string> but received value <number> 22",
+    "severity": "error",
+    "value": 22,
+  },
+  Object {
+    "key": "type.subprop2",
+    "message": "Invalid type for \`type.subprop2\` expected type <number> but received value <string> Hello",
+    "severity": "error",
+    "value": "Hello",
+  },
+]
+`;
+
+exports[`schema-validator.spec Validates nested props Invalid nested array with string and number types 1`] = `
+Array [
+  Object {
+    "key": "prop1.0.subprop1",
+    "message": "Invalid type for \`prop1.0.subprop1\` expected type <string> but received value <number> 22",
+    "severity": "error",
+    "value": 22,
+  },
+  Object {
+    "key": "prop1.0.subprop2",
+    "message": "Invalid type for \`prop1.0.subprop2\` expected type <number> but received value <string> Hello",
+    "severity": "error",
+    "value": "Hello",
+  },
+]
+`;
+
+exports[`schema-validator.spec Validates nested props Invalid nested obj with deep field named type 1`] = `
+Array [
+  Object {
+    "key": "prop1.type",
+    "message": "Invalid type for \`prop1.type\` expected type <string> but received value <number> 22",
+    "severity": "error",
+    "value": 22,
+  },
+]
+`;
+
+exports[`schema-validator.spec Validates nested props Invalid nested object with string and number types 1`] = `
+Array [
+  Object {
+    "key": "prop1.subprop1",
+    "message": "Invalid type for \`prop1.subprop1\` expected type <string> but received value <number> 22",
+    "severity": "error",
+    "value": 22,
+  },
+  Object {
+    "key": "prop1.subprop2",
+    "message": "Invalid type for \`prop1.subprop2\` expected type <number> but received value <string> Hello",
+    "severity": "error",
+    "value": "Hello",
+  },
+]
+`;
