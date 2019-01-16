@@ -17,12 +17,21 @@ const schema = {
   name: {
     type: String,
     alias: 'nickname',
+    required: true,
   },
-  age: Number,
   email: {
     type: String,
     test: value => value.indexOf('@') > -1 ? null : 'Invalid e-mail address'
   },
+  age: {
+    type: Number,
+    test: value => value > 200 ? ({
+      message: 'You can\'t be the that old!',
+      severity: 'warning',
+      anyprop: 1,
+    })
+  },
+  country: String,
   gender: {
     type: String,
     oneOf: ['male', 'female'],
@@ -33,6 +42,13 @@ const schema = {
     number: Number,
   },
 }
+
+// errors = [{
+//   severity: 'error',
+//   key: 'name',
+//   message: 'Error message',
+//   schema: { type: String, ... },
+// }]
 
 const errors = validate(schema, config)
 ```

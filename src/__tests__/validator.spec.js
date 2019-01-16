@@ -122,6 +122,13 @@ describe('schema-validator.spec', () => {
       expect(errors[0].message).toMatch('received value <string>')
       expect(errors[0]).toMatchSnapshot()
     })
+
+    test('Invalid type', () => {
+      const errors = () => validate({
+        prop1: 'invalid',
+      }, { prop1: () => {} })
+      expect(errors).toThrowErrorMatchingSnapshot()
+    })
   })
 
   describe('Error for invalid type by name', () => {
@@ -192,6 +199,41 @@ describe('schema-validator.spec', () => {
       expect(errors).toHaveLength(1)
       expect(errors[0].message).toMatch('expected type <function>')
       expect(errors[0].message).toMatch('received value <string>')
+      expect(errors[0]).toMatchSnapshot()
+    })
+  })
+
+  describe('In-built validators', () => {
+    test('validates property exists on schema', () => {
+      const errors = validate({
+        prop1: String,
+      }, { unknown: 'D' })
+      expect(errors).toHaveLength(1)
+      expect(errors[0].message).toMatch('Unknown key at `unknown`')
+      expect(errors[0]).toMatchSnapshot()
+    })
+
+    test('validates required fields', () => {
+      const errors = validate({
+        prop1: {
+          type: String,
+          required: true,
+        },
+      }, { })
+      expect(errors).toHaveLength(1)
+      expect(errors[0].message).toMatch('Missing required key `prop1`')
+      expect(errors[0]).toMatchSnapshot()
+    })
+
+    test('validates oneOf', () => {
+      const errors = validate({
+        prop1: {
+          type: String,
+          oneOf: ['A', 'B'],
+        },
+      }, { prop1: 'D' })
+      expect(errors).toHaveLength(1)
+      expect(errors[0].message).toMatch('must be one of A, B')
       expect(errors[0]).toMatchSnapshot()
     })
   })
@@ -425,29 +467,16 @@ describe('schema-validator.spec', () => {
       expect(fn).toHaveBeenCalledTimes(1)
       expect(fn).toHaveBeenCalledWith('test1', obj, sub, 'prop1.sub1')
     })
-  })
 
-  describe('Warn fn', () => {
-    test('Warn fn returns no warning', () => {
+    test('Test fn returns custom error', () => {
       const errors = validate({
         prop1: {
           type: String,
-          warn: () => null,
-        },
-      }, { prop1: 'Hello' })
-      expect(errors).toHaveLength(0)
-    })
-
-    test('Warn fn returns a warning', () => {
-      const errors = validate({
-        prop1: {
-          type: String,
-          warn: () => 'I always return a warning',
+          test: () => ({ message: 'I\'m warning you', severity: 'warning' }),
         },
       }, { prop1: 'Hello' })
       expect(errors).toHaveLength(1)
-      expect(errors[0].severity).toEqual('warning')
-      expect(errors[0].message).toEqual('I always return a warning')
+      expect(errors[0].message).toEqual('I\'m warning you')
     })
   })
 

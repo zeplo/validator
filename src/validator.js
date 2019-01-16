@@ -1,3 +1,5 @@
+import { getTypeFromSchema, getTypeFromValue, isObject } from './util'
+
 export default function validate (schema, obj) {
   const state = { all: obj, errors: [] }
   validateFields(schema, obj, state)
@@ -29,7 +31,7 @@ export function validateFields (schema, obj, state, prefix = '') {
 export function validateType (schemaVal, objVal, state, prefix = '', obj) {
   const keyPath = prefix
 
-  // Unknown propertya
+  // Unknown property
   if (!schemaVal) {
     state.errors.push({
       severity: 'warning',
@@ -69,7 +71,7 @@ export function validateType (schemaVal, objVal, state, prefix = '', obj) {
   }
 
   // Check for oneOf
-  if (schemaVal.oneOf && schemaVal.oneOf.indexOf(objVal) === -1) {
+  if (objVal && schemaVal.oneOf && schemaVal.oneOf.indexOf(objVal) === -1) {
     state.errors.push({
       severity: 'error',
       key: keyPath,
@@ -79,30 +81,17 @@ export function validateType (schemaVal, objVal, state, prefix = '', obj) {
     })
   }
 
-  // If warning
-  if (schemaVal.warn) {
-    const warn = schemaVal.warn(objVal, state.all, obj, keyPath)
-    if (warn) {
-      state.errors.push({
-        severity: 'warning',
-        key: keyPath,
-        value: objVal,
-        schema: schemaVal,
-        message: warn,
-      })
-    }
-  }
-
   // If test
   if (schemaVal.test) {
     const test = schemaVal.test(objVal, state.all, obj, keyPath)
     if (test) {
+      const merge = isObject(test) ? test : { message: test }
       state.errors.push({
         severity: 'error',
         key: keyPath,
         value: objVal,
         schema: schemaVal,
-        message: test,
+        ...merge,
       })
     }
   }
@@ -125,48 +114,4 @@ export function validateType (schemaVal, objVal, state, prefix = '', obj) {
 
 function isValidByType (type, value) {
   return getTypeFromSchema(type) === getTypeFromValue(value)
-}
-
-function getTypeFromSchema (type) {
-  if (type === Number || type === 'number') return 'number'
-
-  if (type === Boolean || type === 'boolean') return 'boolean'
-
-  if (type === Array || type === 'array' || Array.isArray(type)) return 'array'
-
-  if (type === Date || type === 'date') return 'date'
-
-  if (type === Function || type === 'function') return 'function'
-
-  if (type === Object || type === 'object' || isObject(type)) return 'object'
-
-  if (type === String || type === 'string') return 'string'
-
-  return null
-}
-
-function getTypeFromValue (value) {
-  const type = typeof value
-  if (type !== 'object') return type
-
-  if (isDate(value)) return 'date'
-
-  if (Array.isArray(value)) return 'array'
-
-  if (isDate(value)) return 'date'
-
-  if (value instanceof Function) return 'function'
-
-  if (value instanceof String) return 'string'
-
-  return type
-}
-
-function isDate (value) {
-  return value instanceof Date
-}
-
-
-function isObject (value) {
-  return value !== null && typeof value === 'object' && !(value instanceof Array)
 }
