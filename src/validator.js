@@ -13,7 +13,7 @@ export function validateObject (schema, obj, state, prefix = '') {
   Object.keys(schema).forEach((key) => {
     schemaKeys.push(key)
     combinedSchema[key] = schema[key]
-    if (schema[key].alias) {
+    if (schema[key].alias && schema[key].type) {
       schemaKeys.push(schema[key].alias)
       combinedSchema[schema[key].alias] = schema[key]
     }
