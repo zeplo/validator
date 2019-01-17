@@ -1,6 +1,6 @@
 import validate from '../validator'
 
-describe('schema-validator.spec', () => {
+describe('validator.spec', () => {
   describe('No error for valid type by constructor', () => {
     test('validates String type', () => {
       const errors = validate({
@@ -347,7 +347,21 @@ describe('schema-validator.spec', () => {
       expect(errors).toHaveLength(0)
     })
 
-    test('Invalid nested object with string and number types', () => {
+    test('Invalid nested object with string and number types - short form', () => {
+      const errors = validate({
+        prop1: {
+          subprop1: String,
+          subprop2: Number,
+          oneOf: String,
+        },
+      }, { prop1: { subprop1: 22, subprop2: 'Hello', oneOf: 'valid' } })
+      expect(errors).toHaveLength(2)
+      expect(errors[0].message).toMatch('expected type <string>')
+      expect(errors[0].message).toMatch('received value <number>')
+      expect(errors).toMatchSnapshot()
+    })
+
+    test('Invalid nested object with string and number types - long form', () => {
       const errors = validate({
         prop1: {
           type: {

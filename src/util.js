@@ -1,3 +1,7 @@
+export function getSchemaType (schema) {
+  return !schema.type ? schema : schema.type
+}
+
 export function normalizeTypeName (type) {
   if (type === Number || type === 'number') return 'number'
 
@@ -39,4 +43,12 @@ export function isDate (value) {
 
 export function isObject (value) {
   return value !== null && typeof value === 'object' && !(value instanceof Array)
+}
+
+export function isFilledObject (value) {
+  return isObject(value) && Object.keys(value).length > 0
+}
+
+export function isSingleArray (value) {
+  return Array.isArray(value) && value.length === 1 && !!value[0]
 }

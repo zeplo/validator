@@ -1,4 +1,4 @@
-import { normalizeTypeName, getTypeFromValue, isObject } from './util'
+import { normalizeTypeName, getTypeFromValue, isObject, isFilledObject, isSingleArray } from './util'
 
 export default function validate (schema, obj) {
   const state = { all: obj, errors: [] }
@@ -62,7 +62,6 @@ export function validateType (schema, value, state, keyPath = '', obj) {
   }
 
   // Check type is valid
-  // TODO: we need to find a better way to do this!
   const type = !schema.type ? schema : schema.type
   const typeName = normalizeTypeName(type)
   if (value && typeName !== getTypeFromValue(value)) {
@@ -76,7 +75,7 @@ export function validateType (schema, value, state, keyPath = '', obj) {
   }
 
   // Check for oneOf
-  if (value && schema.oneOf && schema.oneOf.indexOf(value) === -1) {
+  if (schema.oneOf && value && schema.type && schema.oneOf.indexOf(value) === -1) {
     state.errors.push({
       severity: 'error',
       keyPath,
@@ -87,7 +86,7 @@ export function validateType (schema, value, state, keyPath = '', obj) {
   }
 
   // If test
-  if (schema.test) {
+  if (schema.test && schema.type) {
     const test = schema.test(value, state.all, obj, keyPath)
     if (test) {
       const merge = isObject(test) ? test : { message: test }
@@ -102,7 +101,7 @@ export function validateType (schema, value, state, keyPath = '', obj) {
   }
 
   // Array subtype must have value at index 0
-  if (Array.isArray(type) && type.length === 1 && !!type[0]) {
+  if (isSingleArray(type)) {
     const arrSchema = type[0]
     value.forEach((val, i) => {
       validateType(arrSchema, val, state, `${keyPath}.${i}`, i)
@@ -112,7 +111,7 @@ export function validateType (schema, value, state, keyPath = '', obj) {
 
   // Object subtype must have props and be under schema.type
   // (to prevent conflicts with validating a schema with type field)
-  if (schema.type && isObject(schema.type) && Object.keys(schema.type).length > 0) {
-    validateObject(schema.type, value, state, `${keyPath}`)
+  if (isFilledObject(type)) {
+    validateObject(type, value, state, `${keyPath}`)
   }
 }
