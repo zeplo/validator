@@ -13,7 +13,7 @@ export function validateObject (schema, obj, state, prefix = '') {
   Object.keys(schema).forEach((key) => {
     schemaKeys.push(key)
     combinedSchema[key] = schema[key]
-    if (schema[key].alias && schema[key].type) {
+    if (schema[key].alias) {
       schemaKeys.push(schema[key].alias)
       combinedSchema[schema[key].alias] = schema[key]
     }
@@ -75,7 +75,7 @@ export function validateType (schema, value, state, keyPath = '', obj) {
   }
 
   // Check for oneOf
-  if (schema.oneOf && value && schema.type && schema.oneOf.indexOf(value) === -1) {
+  if (schema.oneOf && value && schema.oneOf.indexOf(value) === -1) {
     state.errors.push({
       severity: 'error',
       keyPath,
@@ -86,7 +86,7 @@ export function validateType (schema, value, state, keyPath = '', obj) {
   }
 
   // If test
-  if (schema.test && schema.type) {
+  if (schema.test) {
     const test = schema.test(value, state.all, obj, keyPath)
     if (test) {
       const merge = isObject(test) ? test : { message: test }
@@ -111,7 +111,7 @@ export function validateType (schema, value, state, keyPath = '', obj) {
 
   // Object subtype must have props and be under schema.type
   // (to prevent conflicts with validating a schema with type field)
-  if (isFilledObject(type)) {
-    validateObject(type, value, state, `${keyPath}`)
+  if (schema.type && isFilledObject(schema.type)) {
+    validateObject(schema.type, value, state, `${keyPath}`)
   }
 }

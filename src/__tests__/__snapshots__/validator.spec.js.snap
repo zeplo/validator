@@ -287,24 +287,7 @@ Array [
 ]
 `;
 
-exports[`validator.spec Validates nested props Invalid nested object with string and number types - long form 1`] = `
-Array [
-  Object {
-    "keyPath": "prop1.subprop1",
-    "message": "Invalid type for \`prop1.subprop1\` expected type <string> but received value <number> 22",
-    "severity": "error",
-    "value": 22,
-  },
-  Object {
-    "keyPath": "prop1.subprop2",
-    "message": "Invalid type for \`prop1.subprop2\` expected type <number> but received value <string> Hello",
-    "severity": "error",
-    "value": "Hello",
-  },
-]
-`;
-
-exports[`validator.spec Validates nested props Invalid nested object with string and number types - short form 1`] = `
+exports[`validator.spec Validates nested props Invalid nested object with string and number types 1`] = `
 Array [
   Object {
     "keyPath": "prop1.subprop1",

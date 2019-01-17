@@ -347,21 +347,21 @@ describe('validator.spec', () => {
       expect(errors).toHaveLength(0)
     })
 
-    test('Invalid nested object with string and number types - short form', () => {
+    test('Valid nested object with type property', () => {
       const errors = validate({
         prop1: {
-          subprop1: String,
-          subprop2: Number,
-          oneOf: String,
+          type: {
+            type: {
+              type: String,
+            },
+            subprop2: Number,
+          },
         },
-      }, { prop1: { subprop1: 22, subprop2: 'Hello', oneOf: 'valid' } })
-      expect(errors).toHaveLength(2)
-      expect(errors[0].message).toMatch('expected type <string>')
-      expect(errors[0].message).toMatch('received value <number>')
-      expect(errors).toMatchSnapshot()
+      }, { prop1: { type: 'hello', subprop2: 122 } })
+      expect(errors).toHaveLength(0)
     })
 
-    test('Invalid nested object with string and number types - long form', () => {
+    test('Invalid nested object with string and number types', () => {
       const errors = validate({
         prop1: {
           type: {
@@ -379,10 +379,38 @@ describe('validator.spec', () => {
     test('Valid nested array with string and number types', () => {
       const errors = validate({
         prop1: [{
-          subprop1: String,
-          subprop2: Number,
+          type: {
+            subprop1: String,
+            subprop2: Number,
+          },
         }],
       }, { prop1: [{ subprop1: 'hello', subprop2: 122 }] })
+      expect(errors).toHaveLength(0)
+    })
+
+    test('Valid nested array with type', () => {
+      const errors = validate({
+        prop1: [{
+          type: {
+            type: String,
+            subprop2: Number,
+          },
+        }],
+      }, { prop1: [{ type: 'hello', subprop2: 122 }] })
+      expect(errors).toHaveLength(0)
+    })
+
+    test('Valid nested array with type - long form', () => {
+      const errors = validate({
+        prop1: [{
+          type: {
+            type: {
+              type: String,
+            },
+            subprop2: Number,
+          },
+        }],
+      }, { prop1: [{ type: 'hello', subprop2: 122 }] })
       expect(errors).toHaveLength(0)
     })
 
