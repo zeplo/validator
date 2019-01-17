@@ -338,8 +338,10 @@ describe('schema-validator.spec', () => {
     test('Valid nested object with string and number types', () => {
       const errors = validate({
         prop1: {
-          subprop1: String,
-          subprop2: Number,
+          type: {
+            subprop1: String,
+            subprop2: Number,
+          },
         },
       }, { prop1: { subprop1: 'hello', subprop2: 122 } })
       expect(errors).toHaveLength(0)
@@ -348,8 +350,10 @@ describe('schema-validator.spec', () => {
     test('Invalid nested object with string and number types', () => {
       const errors = validate({
         prop1: {
-          subprop1: String,
-          subprop2: Number,
+          type: {
+            subprop1: String,
+            subprop2: Number,
+          },
         },
       }, { prop1: { subprop1: 22, subprop2: 'Hello' } })
       expect(errors).toHaveLength(2)
@@ -368,12 +372,31 @@ describe('schema-validator.spec', () => {
       expect(errors).toHaveLength(0)
     })
 
-    test('Invalid nested array with string and number types', () => {
+    test('Invalid nested array with string and number types - short form', () => {
       const errors = validate({
         prop1: [{
-          subprop1: String,
-          subprop2: Number,
+          type: {
+            subprop1: String,
+            subprop2: Number,
+          },
         }],
+      }, { prop1: [{ subprop1: 22, subprop2: 'Hello' }] })
+      expect(errors).toHaveLength(2)
+      expect(errors[0].message).toMatch('expected type <string>')
+      expect(errors[0].message).toMatch('received value <number>')
+      expect(errors).toMatchSnapshot()
+    })
+
+    test('Invalid nested array with string and number types - long form', () => {
+      const errors = validate({
+        prop1: {
+          type: [{
+            type: {
+              subprop1: String,
+              subprop2: Number,
+            },
+          }],
+        },
       }, { prop1: [{ subprop1: 22, subprop2: 'Hello' }] })
       expect(errors).toHaveLength(2)
       expect(errors[0].message).toMatch('expected type <string>')
@@ -394,8 +417,10 @@ describe('schema-validator.spec', () => {
     test('Invalid nested array with schema field named type', () => {
       const errors = validate({
         type: {
-          subprop1: String,
-          subprop2: Number,
+          type: {
+            subprop1: String,
+            subprop2: Number,
+          },
         },
       }, { type: { subprop1: 22, subprop2: 'Hello' } })
       expect(errors).toHaveLength(2)
@@ -468,11 +493,13 @@ describe('schema-validator.spec', () => {
       const obj = { prop1: sub }
       validate({
         prop1: {
-          sub1: {
-            type: String,
-            test: fn,
+          type: {
+            sub1: {
+              type: String,
+              test: fn,
+            },
+            sub2: String,
           },
-          sub2: String,
         },
       }, obj)
       expect(fn).toHaveBeenCalledTimes(1)

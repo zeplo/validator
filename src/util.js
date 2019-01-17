@@ -1,4 +1,4 @@
-export function getTypeFromSchema (type) {
+export function normalizeTypeName (type) {
   if (type === Number || type === 'number') return 'number'
 
   if (type === Boolean || type === 'boolean') return 'boolean'

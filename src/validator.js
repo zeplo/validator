@@ -1,4 +1,4 @@
-import { getTypeFromSchema, getTypeFromValue, isObject } from './util'
+import { normalizeTypeName, getTypeFromValue, isObject } from './util'
 
 export default function validate (schema, obj) {
   const state = { all: obj, errors: [] }
@@ -55,68 +55,64 @@ export function validateObject (schema, obj, state, prefix = '') {
   })
 }
 
-export function validateType (schemaVal, objVal, state, prefix = '', obj) {
-  const keyPath = prefix
-
+export function validateType (schema, value, state, keyPath = '', obj) {
   // Non-required and missing
-  if (!schemaVal.required && !schemaVal.testEmpty && !objVal) {
+  if (!schema.required && !schema.testEmpty && !value) {
     return
   }
 
   // Check type is valid
-  const type = schemaVal.type && !schemaVal.type.type ? schemaVal.type : schemaVal
-  if (objVal && !isValidByType(type, objVal)) {
+  // TODO: we need to find a better way to do this!
+  const type = !schema.type ? schema : schema.type
+  const typeName = normalizeTypeName(type)
+  if (value && typeName !== getTypeFromValue(value)) {
     state.errors.push({
       severity: 'error',
-      key: keyPath,
-      value: objVal,
-      message: `Invalid type for \`${keyPath}\` expected type <${getTypeFromSchema(type)}> but received value <${getTypeFromValue(objVal)}> ${objVal.toString()}`,
+      keyPath,
+      value,
+      message: `Invalid type for \`${keyPath}\` expected type <${typeName}> but received value <${getTypeFromValue(value)}> ${value.toString()}`,
     })
     return
   }
 
   // Check for oneOf
-  if (objVal && schemaVal.oneOf && schemaVal.oneOf.indexOf(objVal) === -1) {
+  if (value && schema.oneOf && schema.oneOf.indexOf(value) === -1) {
     state.errors.push({
       severity: 'error',
-      key: keyPath,
-      value: objVal,
-      schema: schemaVal,
-      message: `Invalid option selected for \`${keyPath}\` must be one of ${schemaVal.oneOf.join(', ')}`,
+      keyPath,
+      value,
+      schema,
+      message: `Invalid option selected for \`${keyPath}\` must be one of ${schema.oneOf.join(', ')}`,
     })
   }
 
   // If test
-  if (schemaVal.test) {
-    const test = schemaVal.test(objVal, state.all, obj, keyPath)
+  if (schema.test) {
+    const test = schema.test(value, state.all, obj, keyPath)
     if (test) {
       const merge = isObject(test) ? test : { message: test }
       state.errors.push({
         severity: 'error',
-        key: keyPath,
-        value: objVal,
-        schema: schemaVal,
+        keyPath,
+        value,
+        schema,
         ...merge,
       })
     }
   }
 
-  // Check if array type
-  if (Array.isArray(type)) {
+  // Array subtype must have value at index 0
+  if (Array.isArray(type) && type.length === 1 && !!type[0]) {
     const arrSchema = type[0]
-    objVal.forEach((val, i) => {
+    value.forEach((val, i) => {
       validateType(arrSchema, val, state, `${keyPath}.${i}`, i)
     })
     return
   }
 
-  // Check if object type
-  if (isObject(type)) {
-    const objSchema = type
-    validateObject(objSchema, objVal, state, `${keyPath}`)
+  // Object subtype must have props and be under schema.type
+  // (to prevent conflicts with validating a schema with type field)
+  if (schema.type && isObject(schema.type) && Object.keys(schema.type).length > 0) {
+    validateObject(schema.type, value, state, `${keyPath}`)
   }
-}
-
-function isValidByType (type, value) {
-  return getTypeFromSchema(type) === getTypeFromValue(value)
 }

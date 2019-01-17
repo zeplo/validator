@@ -1,6 +1,7 @@
 # Zeplo Validator
 
-Validates a schema, using JS objects and validator functions. Also, allows for warnings.
+Validates a schema, using JS types and validator functions. Outputs an array of all
+errors, so you can format them as you need.
 
 Install with:
 
@@ -38,16 +39,18 @@ const schema = {
   },
   pets: [String],
   address: {
-    postcode: String,
-    number: Number,
+    type: {
+      postcode: String,
+      number: Number,
+    }
   },
 }
 
 // errors = [{
 //   severity: 'error',
-//   key: 'name',
+//   keyPath: 'address.postcode',
 //   message: 'Error message',
-//   schema: { type: String, ... },
+//   schema: { type: String },
 // }]
 
 const errors = validator(schema, config)
