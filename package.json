@@ -37,5 +37,16 @@
     "jest": "^23.3.0",
     "nyc": "^12.0.2"
   },
-  "license": "MIT"
+  "license": "MIT",
+  "jest": {
+    "verbose": true,
+    "restoreMocks": true,
+    "collectCoverageFrom": [
+      "src/**/*.js"
+    ],
+    "testEnvironment": "node",
+    "testMatch": [
+      "<rootDir>/src/**/?(*.)(spec|test).js"
+    ]
+  }
 }

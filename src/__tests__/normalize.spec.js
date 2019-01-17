@@ -17,6 +17,22 @@ describe('normalize.spec', () => {
       })
     })
 
+    test('normalize string alias with optional field', () => {
+      const res = normalize({
+        name: {
+          type: String,
+          alias: 'fname',
+        },
+        age: {
+          type: String,
+        },
+      }, { fname: 'John' })
+
+      expect(res).toEqual({
+        name: 'John',
+      })
+    })
+
     test('normalize array of strings alias field', () => {
       const res = normalize({
         animals: {
@@ -28,6 +44,17 @@ describe('normalize.spec', () => {
       expect(res).toEqual({
         animals: ['rabbit', 'dog'],
       })
+    })
+
+    test('normalize with unknown field', () => {
+      const res = normalize({
+        name: {
+          type: String,
+          alias: 'fname',
+        },
+      }, { fname: 'John', unknown: 1 })
+
+      expect(res).toEqual({ name: 'John', unknown: 1 })
     })
 
     test('normalize object alias field', () => {

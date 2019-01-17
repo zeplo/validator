@@ -17,18 +17,22 @@ export default function normalize (schema, obj) {
     const modKey = aliasMap[key] ? aliasMap[key] : key
 
     const schemaVal = schema[modKey]
-    const type = getSchemaType(schemaVal)
     let value = obj[key]
 
-    // Array subtype with object sub-doc
-    if (isSingleArray(type) && isFilledObject(getSchemaType(type[0]))) {
-      const arrSchema = getSchemaType(type[0])
-      value = value.map(val => normalize(arrSchema, val))
-    }
+    // Key does not exist, so filter it out
+    if (schemaVal) {
+      const type = getSchemaType(schemaVal)
 
-    // Object subtype
-    if (isFilledObject(type)) {
-      value = normalize(type, value)
+      // Array subtype with object sub-doc
+      if (isSingleArray(type) && isFilledObject(getSchemaType(type[0]))) {
+        const arrSchema = getSchemaType(type[0])
+        value = value.map(val => normalize(arrSchema, val))
+      }
+
+      // Object subtype
+      if (isFilledObject(type)) {
+        value = normalize(type, value)
+      }
     }
 
     out[modKey] = value
