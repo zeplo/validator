@@ -225,6 +225,17 @@ describe('schema-validator.spec', () => {
       expect(errors[0]).toMatchSnapshot()
     })
 
+    test('validates required fields with alias', () => {
+      const errors = validate({
+        prop1: {
+          type: String,
+          alias: 'prop2',
+          required: true,
+        },
+      }, { prop2: 'D' })
+      expect(errors).toHaveLength(0)
+    })
+
     test('validates oneOf', () => {
       const errors = validate({
         prop1: {

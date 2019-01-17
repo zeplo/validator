@@ -2,56 +2,61 @@ import { getTypeFromSchema, getTypeFromValue, isObject } from './util'
 
 export default function validate (schema, obj) {
   const state = { all: obj, errors: [] }
-  validateFields(schema, obj, state)
+  validateObject(schema, obj, state)
   return state.errors
 }
 
-export function validateFields (schema, obj, state, prefix = '') {
-  // A full list of keys to iterate over
-  const schemaKeys = Object.keys(schema)
-
-  // Get aliases
-  const aliasSchema = {}
-  schemaKeys.forEach((key) => {
+export function validateObject (schema, obj, state, prefix = '') {
+  // Combine aliases in schema
+  const combinedSchema = {}
+  const schemaKeys = []
+  Object.keys(schema).forEach((key) => {
+    schemaKeys.push(key)
+    combinedSchema[key] = schema[key]
     if (schema[key].alias) {
-      aliasSchema[schema[key].alias] = schema[key]
+      schemaKeys.push(schema[key].alias)
+      combinedSchema[schema[key].alias] = schema[key]
     }
   })
 
-  const keys = schemaKeys.concat(Object.keys(obj)).concat(Object.keys(aliasSchema))
+  const keys = schemaKeys.concat(Object.keys(obj))
   const set = new Set(keys)
 
   set.forEach((key) => {
-    const schemaVal = schema[key] || aliasSchema[key]
+    const schemaVal = combinedSchema[key]
     const objVal = obj[key]
-    validateType(schemaVal, objVal, state, `${prefix}${prefix && '.'}${key}`, obj)
+    const keyPath = `${prefix}${prefix && '.'}${key}`
+
+    // Unknown property
+    if (!schemaVal) {
+      state.errors.push({
+        severity: 'warning',
+        key: keyPath,
+        value: objVal,
+        message: `Unknown key at \`${keyPath}\``,
+      })
+      return
+    }
+
+    // Required but missing - only run for non-alias key and check if a value
+    // is provided for the alias instead
+    const isAlias = schemaVal.alias === key
+    if (schemaVal.required && !objVal && !isAlias && !obj[schemaVal.alias]) {
+      state.errors.push({
+        severity: 'error',
+        key: keyPath,
+        value: objVal,
+        message: `Missing required key \`${keyPath}\``,
+      })
+      return
+    }
+
+    validateType(schemaVal, objVal, state, keyPath, obj, key)
   })
 }
 
 export function validateType (schemaVal, objVal, state, prefix = '', obj) {
   const keyPath = prefix
-
-  // Unknown property
-  if (!schemaVal) {
-    state.errors.push({
-      severity: 'warning',
-      key: keyPath,
-      value: objVal,
-      message: `Unknown key at \`${keyPath}\``,
-    })
-    return
-  }
-
-  // Required but missing
-  if (schemaVal.required && !objVal) {
-    state.errors.push({
-      severity: 'error',
-      key: keyPath,
-      value: objVal,
-      message: `Missing required key \`${keyPath}\``,
-    })
-    return
-  }
 
   // Non-required and missing
   if (!schemaVal.required && !schemaVal.testEmpty && !objVal) {
@@ -100,7 +105,7 @@ export function validateType (schemaVal, objVal, state, prefix = '', obj) {
   if (Array.isArray(type)) {
     const arrSchema = type[0]
     objVal.forEach((val, i) => {
-      validateType(arrSchema, val, state, `${keyPath}.${i}`)
+      validateType(arrSchema, val, state, `${keyPath}.${i}`, i)
     })
     return
   }
@@ -108,7 +113,7 @@ export function validateType (schemaVal, objVal, state, prefix = '', obj) {
   // Check if object type
   if (isObject(type)) {
     const objSchema = type
-    validateFields(objSchema, objVal, state, `${keyPath}`)
+    validateObject(objSchema, objVal, state, `${keyPath}`)
   }
 }
 
