@@ -1,3 +1,4 @@
+import oneOfType from '../oneoftype'
 import validate from '../validator'
 
 describe('validator.spec', () => {
@@ -586,6 +587,63 @@ describe('validator.spec', () => {
         },
       }, { prop2: 'Hello' })
       expect(errors).toHaveLength(0)
+    })
+  })
+
+  describe('One of type', () => {
+    test('Allows one of string or number - number provided', () => {
+      const errors = validate({
+        prop1: oneOfType(String, Number),
+      }, { prop1: 22 })
+      expect(errors).toHaveLength(0)
+    })
+
+    test('Allows one of string or number - string provided', () => {
+      const errors = validate({
+        prop1: oneOfType(String, Number),
+      }, { prop1: 'Hello' })
+      expect(errors).toHaveLength(0)
+    })
+
+    test('Allows one of string or number - invalid value provided', () => {
+      const errors = validate({
+        prop1: oneOfType(String, Number),
+      }, { prop1: () => {} })
+      expect(errors).toHaveLength(1)
+      expect(errors[0].message).toMatch('expected type <string|number>')
+      expect(errors[0]).toMatchSnapshot()
+    })
+
+    test('Allows one of string or nested array (short form) - nested array provided', () => {
+      const errors = validate({
+        prop1: oneOfType(String, [String]),
+      }, { prop1: ['Hello'] })
+      expect(errors).toHaveLength(0)
+    })
+
+    test('Allows one of string or nested array (long form) - nested array provided', () => {
+      const errors = validate({
+        prop1: oneOfType(String, [{ type: String }]),
+      }, { prop1: ['Hello'] })
+      expect(errors).toHaveLength(0)
+    })
+
+    test('Allows one of string or nested array - invalid array of numbers', () => {
+      const errors = validate({
+        prop1: oneOfType(String, [String]),
+      }, { prop1: [12] })
+      expect(errors).toHaveLength(1)
+      expect(errors[0].message).toMatch('expected type <string>')
+      expect(errors[0]).toMatchSnapshot()
+    })
+
+    test('Allows one of string or nested object - invalid object', () => {
+      const errors = validate({
+        prop1: oneOfType(String, { type: { x: String } }),
+      }, { prop1: { x: 10 } })
+      expect(errors).toHaveLength(1)
+      expect(errors[0].message).toMatch('expected type <string>')
+      expect(errors[0]).toMatchSnapshot()
     })
   })
 })

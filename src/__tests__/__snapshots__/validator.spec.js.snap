@@ -225,6 +225,33 @@ Object {
 }
 `;
 
+exports[`validator.spec One of type Allows one of string or nested array - invalid array of numbers 1`] = `
+Object {
+  "keyPath": "prop1.0",
+  "message": "Invalid type for \`prop1.0\` expected type <string> but received value <number> 12",
+  "severity": "error",
+  "value": 12,
+}
+`;
+
+exports[`validator.spec One of type Allows one of string or nested object - invalid object 1`] = `
+Object {
+  "keyPath": "prop1.x",
+  "message": "Invalid type for \`prop1.x\` expected type <string> but received value <number> 10",
+  "severity": "error",
+  "value": 10,
+}
+`;
+
+exports[`validator.spec One of type Allows one of string or number - invalid value provided 1`] = `
+Object {
+  "keyPath": "prop1",
+  "message": "Invalid type for \`prop1\` expected type <string|number> but received value <function> () => {}",
+  "severity": "error",
+  "value": [Function],
+}
+`;
+
 exports[`validator.spec Validates nested props Invalid nested array with schema field named type 1`] = `
 Array [
   Object {

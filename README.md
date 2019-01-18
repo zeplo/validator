@@ -1,7 +1,6 @@
 # Zeplo Validator
 
-Validates a schema, using JS types and validator functions. Outputs an array of all
-errors, so you can format them as you need.
+Multi-depth schema validator, using JS types and custom validator functions. Outputs an array of all errors, so you can format them as you need.
 
 Install with:
 
@@ -12,7 +11,7 @@ yarn add @zeplo/validator
 ### Usage
 
 ```js
-const validator = require('@zeplo/validator')
+const validator, { oneOfType } = require('@zeplo/validator')
 
 const schema = {
   name: {
@@ -40,7 +39,7 @@ const schema = {
   pets: [String],
   address: {
     type: {
-      postcode: String,
+      postcode: oneOfType(String, Number),
       number: Number,
     }
   },

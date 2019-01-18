@@ -1,4 +1,13 @@
-import { normalizeTypeName, getTypeFromValue, isObject, isFilledObject, isSingleArray } from './util'
+import {
+  getSchemaType,
+  getSchemaFromValue,
+  valueIsValidType,
+  normalizeTypeName,
+  getTypeFromValue,
+  isObject,
+  isFilledObject,
+  isSingleArray,
+} from './util'
 
 export default function validate (schema, obj) {
   const state = { all: obj, errors: [] }
@@ -62,14 +71,12 @@ export function validateType (schema, value, state, keyPath = '', obj) {
   }
 
   // Check type is valid
-  const type = !schema.type ? schema : schema.type
-  const typeName = normalizeTypeName(type)
-  if (value && typeName !== getTypeFromValue(value)) {
+  if (value && !valueIsValidType(schema, value)) {
     state.errors.push({
       severity: 'error',
       keyPath,
       value,
-      message: `Invalid type for \`${keyPath}\` expected type <${typeName}> but received value <${getTypeFromValue(value)}> ${value.toString()}`,
+      message: `Invalid type for \`${keyPath}\` expected type <${normalizeTypeName(getSchemaType(schema))}> but received value <${getTypeFromValue(value)}> ${value.toString()}`,
     })
     return
   }
@@ -100,9 +107,14 @@ export function validateType (schema, value, state, keyPath = '', obj) {
     }
   }
 
+  // In case of OneOfType, we need to select the schema that is being
+  // used by matching it against the value
+  const schemaFromVal = getSchemaFromValue(schema, value)
+  const typeFromVal = getSchemaType(schemaFromVal)
+
   // Array subtype must have value at index 0
-  if (isSingleArray(type)) {
-    const arrSchema = type[0]
+  if (isSingleArray(typeFromVal)) {
+    const arrSchema = typeFromVal[0]
     value.forEach((val, i) => {
       validateType(arrSchema, val, state, `${keyPath}.${i}`, i)
     })
@@ -110,8 +122,8 @@ export function validateType (schema, value, state, keyPath = '', obj) {
   }
 
   // Object subtype must have props and be under schema.type
-  // (to prevent conflicts with validating a schema with type field)
-  if (schema.type && isFilledObject(schema.type)) {
-    validateObject(schema.type, value, state, `${keyPath}`)
+  // (to prevent conflicts with validating a schema with a type field)
+  if (schemaFromVal.type && isFilledObject(schemaFromVal.type)) {
+    validateObject(schemaFromVal.type, value, state, `${keyPath}`)
   }
 }
