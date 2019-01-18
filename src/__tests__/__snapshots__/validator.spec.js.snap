@@ -276,6 +276,23 @@ Array [
 ]
 `;
 
+exports[`validator.spec Validates nested props Invalid nested array with type - long form 1`] = `
+Array [
+  Object {
+    "keyPath": "prop1.0.type",
+    "message": "Invalid type for \`prop1.0.type\` expected type <string> but received value <number> 22",
+    "severity": "error",
+    "value": 22,
+  },
+  Object {
+    "keyPath": "prop1.0.subprop2",
+    "message": "Invalid type for \`prop1.0.subprop2\` expected type <number> but received value <string> Hello",
+    "severity": "error",
+    "value": "Hello",
+  },
+]
+`;
+
 exports[`validator.spec Validates nested props Invalid nested obj with deep field named type 1`] = `
 Array [
   Object {

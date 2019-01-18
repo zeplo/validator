@@ -414,6 +414,23 @@ describe('validator.spec', () => {
       expect(errors).toHaveLength(0)
     })
 
+    test('Invalid nested array with type - long form', () => {
+      const errors = validate({
+        prop1: [{
+          type: {
+            type: {
+              type: String,
+            },
+            subprop2: Number,
+          },
+        }],
+      }, { prop1: [{ type: 22, subprop2: 'Hello' }] })
+      expect(errors).toHaveLength(2)
+      expect(errors[0].message).toMatch('expected type <string>')
+      expect(errors[0].message).toMatch('received value <number>')
+      expect(errors).toMatchSnapshot()
+    })
+
     test('Invalid nested array with string and number types - short form', () => {
       const errors = validate({
         prop1: [{
