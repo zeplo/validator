@@ -1,4 +1,4 @@
-import { getSchemaType, isFilledObject, isSingleArray } from './util'
+import { getSchemaType, getSchemaFromValue, isFilledObject, isSingleArray } from './util'
 
 export default function normalize (schema, obj) {
   // Combine aliases in schema
@@ -16,22 +16,26 @@ export default function normalize (schema, obj) {
   keys.forEach((key) => {
     const modKey = aliasMap[key] ? aliasMap[key] : key
 
-    const schemaVal = schema[modKey]
     let value = obj[key]
+    const schemaVal = schema[modKey]
 
     // Key does not exist, so filter it out
     if (schemaVal) {
-      const type = getSchemaType(schemaVal)
+      const schemaFromVal = getSchemaFromValue(schemaVal, value)
+      const type = getSchemaType(schemaFromVal)
+
 
       // Array subtype with object sub-doc
-      if (isSingleArray(type) && isFilledObject(getSchemaType(type[0]))) {
-        const arrSchema = getSchemaType(type[0])
-        value = value.map(val => normalize(arrSchema, val))
+      if (isSingleArray(type) && value[0]) {
+        const arrSchema = getSchemaFromValue(type[0], value[0])
+        if (arrSchema && arrSchema.type && isFilledObject(arrSchema.type)) {
+          value = value.map(val => normalize(arrSchema.type, val))
+        }
       }
 
       // Object subtype
-      if (isFilledObject(type)) {
-        value = normalize(type, value)
+      if (schemaFromVal.type && isFilledObject(schemaFromVal.type)) {
+        value = normalize(schemaFromVal.type, value)
       }
     }
 

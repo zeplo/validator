@@ -225,6 +225,24 @@ Object {
 }
 `;
 
+exports[`validator.spec One of type Allows array of oneOfType - invalid object 1`] = `
+Object {
+  "keyPath": "prop1.0.x",
+  "message": "Invalid type for \`prop1.0.x\` expected type <string> but received value <number> 10",
+  "severity": "error",
+  "value": 10,
+}
+`;
+
+exports[`validator.spec One of type Allows array of oneOfType - invalid primitive 1`] = `
+Object {
+  "keyPath": "prop1.0",
+  "message": "Invalid type for \`prop1.0\` expected type <string|object> but received value <number> 10",
+  "severity": "error",
+  "value": 10,
+}
+`;
+
 exports[`validator.spec One of type Allows one of string or nested array - invalid array of numbers 1`] = `
 Object {
   "keyPath": "prop1.0",

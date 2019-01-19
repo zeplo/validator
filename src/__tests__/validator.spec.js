@@ -645,5 +645,37 @@ describe('validator.spec', () => {
       expect(errors[0].message).toMatch('expected type <string>')
       expect(errors[0]).toMatchSnapshot()
     })
+
+    test('Allows array of oneOfType - valid string', () => {
+      const errors = validate({
+        prop1: [oneOfType(String, { type: { x: String } })],
+      }, { prop1: ['Hello'] })
+      expect(errors).toHaveLength(0)
+    })
+
+    test('Allows array of oneOfType - valid object', () => {
+      const errors = validate({
+        prop1: [oneOfType(String, { type: { x: String } })],
+      }, { prop1: [{ x: 'Hello' }] })
+      expect(errors).toHaveLength(0)
+    })
+
+    test('Allows array of oneOfType - invalid primitive', () => {
+      const errors = validate({
+        prop1: [oneOfType(String, { type: { x: String } })],
+      }, { prop1: [10] })
+      expect(errors).toHaveLength(1)
+      expect(errors[0].message).toMatch('expected type <string|object>')
+      expect(errors[0]).toMatchSnapshot()
+    })
+
+    test('Allows array of oneOfType - invalid object', () => {
+      const errors = validate({
+        prop1: [oneOfType(String, { type: { x: String } })],
+      }, { prop1: [{ x: 10 }] })
+      expect(errors).toHaveLength(1)
+      expect(errors[0].message).toMatch('expected type <string>')
+      expect(errors[0]).toMatchSnapshot()
+    })
   })
 })

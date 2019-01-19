@@ -1,3 +1,4 @@
+import oneOfType from '../oneoftype'
 import normalize from '../normalize'
 
 describe('normalize.spec', () => {
@@ -90,9 +91,11 @@ describe('normalize.spec', () => {
     test('normalize array multi-depth alias - short form', () => {
       const res = normalize({
         animals: [{
-          name: {
-            type: String,
-            alias: 'type',
+          type: {
+            name: {
+              type: String,
+              alias: 'type',
+            },
           },
         }],
       }, { animals: [{ type: 'dog' }] })
@@ -112,6 +115,57 @@ describe('normalize.spec', () => {
             },
           },
         }],
+      }, { animals: [{ type: 'dog' }] })
+
+      expect(res).toEqual({
+        animals: [{ name: 'dog' }],
+      })
+    })
+  })
+
+  describe('Normalize oneOfType alias fields', () => {
+    test('normalize string alias field', () => {
+      const res = normalize({
+        name: {
+          type: oneOfType(String, Number),
+          alias: 'fname',
+        },
+        age: Number,
+      }, { fname: 'John', age: 20 })
+
+      expect(res).toEqual({
+        name: 'John',
+        age: 20,
+      })
+    })
+
+    test('normalize nested object alias field', () => {
+      const res = normalize({
+        animals: oneOfType(String, {
+          type: {
+            fury: {
+              type: Boolean,
+              alias: 'fur',
+            },
+          },
+        }),
+      }, { animals: { fur: true } })
+
+      expect(res).toEqual({
+        animals: { fury: true },
+      })
+    })
+
+    test('normalize array multi-depth alias', () => {
+      const res = normalize({
+        animals: [oneOfType(String, {
+          type: {
+            name: {
+              type: String,
+              alias: 'type',
+            },
+          },
+        })],
       }, { animals: [{ type: 'dog' }] })
 
       expect(res).toEqual({

@@ -43,6 +43,9 @@ const schema = {
       number: Number,
     }
   },
+  // each oneOfType must be a different type
+  // e.g. `favourite: oneOfType([String], [Number])` is invalid because both are arrays
+  favourite: [oneOfType(String, Number)]
 }
 
 // errors = [{
