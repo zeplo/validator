@@ -47,13 +47,24 @@ describe('normalize.spec', () => {
       })
     })
 
-    test('normalize with unknown field', () => {
+    test('normalize with unknown field is filtered', () => {
       const res = normalize({
         name: {
           type: String,
           alias: 'fname',
         },
       }, { fname: 'John', unknown: 1 })
+
+      expect(res).toEqual({ name: 'John' })
+    })
+
+    test('normalize with unknown field is not filtered', () => {
+      const res = normalize({
+        name: {
+          type: String,
+          alias: 'fname',
+        },
+      }, { fname: 'John', unknown: 1 }, { filter: false })
 
       expect(res).toEqual({ name: 'John', unknown: 1 })
     })
